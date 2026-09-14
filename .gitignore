@@ -1,0 +1,10 @@
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+admin/keys/
+*.pem
+*.lic
+build/
+dist/
+*.spec
