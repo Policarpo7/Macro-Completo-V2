@@ -29,7 +29,24 @@ Aplicativo desktop Python para Windows com interface em português, perfis por o
 
 Catálogo inicial não exaustivo. Adicione os demais usando **Novo**. A seleção é manual.
 
-## Instalar e abrir no Windows
+## Distribuição pronta: usuário sem programação
+
+O cliente recebe um ZIP, extrai e abre **MacroCompleto.exe** com dois cliques. Python e dependências já estão incluídos; não existe terminal no uso normal.
+
+**Para você:** abra [Windows executables](https://github.com/Policarpo7/Macro-Completo-V2/actions/workflows/windows-app.yml), escolha a execução verde mais recente e baixe **MacroCompleto-Kit-Proprietario-Windows** em **Artifacts**. O download exige login no GitHub; os artefatos ficam disponíveis por 90 dias e podem ser recriados pelo botão **Run workflow**. Extraia o ZIP e abra **GerenciadorLicencas.exe**.
+
+1. Clique em **Criar emissor** e escolha sua senha (somente na primeira vez).
+2. Clique em **Preparar ZIP do cliente**. O gerenciador reúne o aplicativo, a chave pública e instruções simples.
+3. Envie ao usuário somente o ZIP gerado.
+4. Quando ele enviar o ID, preencha nome, ID e plano, clique em **Gerar key** e **Copiar key**.
+
+O kit do proprietário não é o pacote para enviar ao cliente. A ferramenta administrativa e a chave privada ficam com você. O pacote do cliente tem uma lista fixa de três arquivos: `MacroCompleto.exe`, `public_key.txt` e `LEIA-ME.txt`. O cliente mantém os três na mesma pasta e abre apenas o executável.
+
+A chave pública é lida ao lado do executável; os dados do usuário continuam em LOCALAPPDATA. Preserve o mesmo emissor nas atualizações. Se já criou um emissor pela CLI, selecione a pasta `admin/keys` e coloque nela o `public_key.txt` correspondente.
+
+O workflow testa os fontes, compila ambos os executáveis e abre as duas interfaces compiladas para verificar dependências e inicialização. Essa verificação não valida o comportamento dentro do jogo. Distribuição atual: Windows x64, portátil, sem instalador e sem assinatura de código.
+
+## Executar a partir do código (somente desenvolvimento)
 
 1. Instale [Python](https://www.python.org/downloads/windows/) 3.11 ou superior, incluindo Tcl/Tk e o Python Launcher.
 2. No GitHub, clique em **Code → Download ZIP** e extraia tudo.
@@ -151,3 +168,5 @@ Este licenciamento é **offline**: o relógio e os arquivos locais não são fon
 
 - [Documentação Ed25519 da cryptography](https://cryptography.io/en/latest/hazmat/primitives/asymmetric/ed25519/).
 - Catálogo oficial: [Ash](https://www.ubisoft.com/en-us/game/rainbow-six/siege/game-info/operators/ash), [Sledge](https://www.ubisoft.com/en-us/game/rainbow-six/siege/game-info/operators/sledge), [Thermite](https://www.ubisoft.com/en-us/game/rainbow-six/siege/game-info/operators/thermite), [Twitch](https://www.ubisoft.com/en-us/game/rainbow-six/siege/game-info/operators/twitch), [Jäger](https://www.ubisoft.com/en-us/game/rainbow-six/siege/game-info/operators/jager), [Bandit](https://www.ubisoft.com/en-us/game/rainbow-six/siege/game-info/operators/bandit), [Doc](https://www.ubisoft.com/en-us/game/rainbow-six/siege/game-info/operators/doc), [Smoke](https://www.ubisoft.com/en-us/game/rainbow-six/siege/game-info/operators/smoke). Estas páginas sustentam nomes/armas, não valores de compensação.
+
+Empacotamento: [PyInstaller — executáveis](https://pyinstaller.org/en/stable/usage.html) e [caminhos em execução](https://pyinstaller.org/en/stable/runtime-information.html).

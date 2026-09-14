@@ -1,0 +1,37 @@
+MACRO COMPLETO V2 - KIT DO PROPRIETARIO
+
+Este kit contem:
+- MacroCompleto.exe: aplicativo do cliente.
+- GerenciadorLicencas.exe: sua ferramenta para preparar pacotes e gerar keys.
+
+PRIMEIRA VEZ
+1. Extraia todo o kit para uma pasta.
+2. Abra GerenciadorLicencas.exe com dois cliques.
+3. Clique em "1. Criar emissor (uma vez)" e escolha uma senha.
+4. Guarde a senha e faca backup da pasta do emissor mostrada na tela.
+5. Clique em "2. Preparar ZIP do cliente" e escolha onde salvar.
+6. Envie SOMENTE o ZIP gerado ao cliente.
+
+O CLIENTE
+1. Extrai todos os arquivos do ZIP.
+2. Abre MacroCompleto.exe com dois cliques.
+3. Na aba Licenca, copia o ID e envia para voce.
+4. Cola a key recebida e ativa.
+Nao instala Python, nao executa comandos e nao precisa do gerenciador.
+
+EMITIR E RENOVAR
+1. Abra GerenciadorLicencas.exe.
+2. Preencha o nome, o ID recebido e o plano.
+3. Clique em Gerar key, digite sua senha e clique em Copiar key.
+4. Envie a key ao cliente.
+Planos: Diaria 24h, Semanal 7 dias, Mensal 30 dias, Vitalicia sem vencimento.
+O prazo comeca no momento da emissao.
+
+ATUALIZAR
+Use a mesma pasta do emissor e a mesma senha nas novas versoes.
+Nao crie outro emissor para cada atualizacao.
+Prepare um novo ZIP usando o MacroCompleto.exe atualizado.
+Se voce ja criou o emissor pelo comando da versao anterior, selecione a
+pasta admin/keys e copie para ela o public_key.txt correspondente.
+
+NUNCA envie issuer-private.pem ou a pasta do emissor ao cliente.

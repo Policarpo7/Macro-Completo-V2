@@ -14,7 +14,8 @@ from macro.licensing import (ClockGuard, LicenseError, LicenseSession, PLAN_LABE
 from macro.profiles import (CATALOG, Profile, duplicate, load_profiles, save_profiles)
 from macro.storage import data_dir, write_json
 
-ROOT = Path(__file__).resolve().parent
+ROOT = (Path(sys.executable).resolve().parent if getattr(sys, "frozen", False)
+        else Path(__file__).resolve().parent)
 BG, CARD, TEXT, MUTED, ACCENT = "#0b1220", "#162235", "#e8eef7", "#a4b3c8", "#43d9b0"
 
 
@@ -174,7 +175,7 @@ class App(tk.Tk):
             "   Não há detecção automática de personagem, janela do jogo ou acessórios.\n"
             "   Quando ativado, o movimento é global. Pause com F10 antes de trocar de aplicativo.\n\n"
             "Perfis e licença ficam em %LOCALAPPDATA%\\PolicarpoMacroV2.\n"
-            "Licenças V1 não são compatíveis. Consulte o README para emitir keys e executar os testes."
+            "Para renovar, envie o ID ao fornecedor e cole a nova key na aba Licença."
         )
         ttk.Label(help_tab, text=help_text, wraplength=900, justify="left").pack(anchor="w")
         footer = ttk.Frame(self, padding=(24, 12))
@@ -209,8 +210,8 @@ class App(tk.Tk):
     def load_public_key(self):
         path = ROOT / "public_key.txt"
         if not path.exists():
-            raise LicenseError("Emissor não configurado: o proprietário deve executar python -m admin.license_tool init "
-                               "e distribuir public_key.txt junto do aplicativo.")
+            raise LicenseError("O pacote está incompleto. Extraia todos os arquivos do ZIP recebido "
+                               "ou solicite um novo pacote ao fornecedor.")
         try:
             self.public_key = decode(path.read_text(encoding="ascii").strip())
             if len(self.public_key) != 32:
@@ -466,4 +467,19 @@ class App(tk.Tk):
 
 
 if __name__ == "__main__":
-    App().mainloop()
+    if "--smoke-test" in sys.argv:
+        import tempfile
+        import pynput.keyboard
+        import pynput.mouse
+        with tempfile.TemporaryDirectory() as temporary:
+            data_dir = lambda: Path(temporary)
+            window = App(autostart=False)
+            try:
+                window.initialize()
+                window.update()
+                assert window.items and window.device and window.engine.available
+                assert not window.engine.enabled
+            finally:
+                window.close()
+    else:
+        App().mainloop()

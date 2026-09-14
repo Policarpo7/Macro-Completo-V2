@@ -1,0 +1,37 @@
+name: Windows executables
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  build:
+    runs-on: windows-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - name: Install build dependencies
+        run: python -m pip install -r requirements.txt "pyinstaller>=6.16,<7"
+      - name: Test before packaging
+        run: python -m unittest discover -s tests -v
+      - name: Build client
+        run: python -m PyInstaller --noconfirm --clean --onefile --windowed --noupx --name MacroCompleto --hidden-import pynput.keyboard._win32 --hidden-import pynput.mouse._win32 app.py
+      - name: Build owner tool
+        run: python -m PyInstaller --noconfirm --clean --onefile --windowed --noupx --name GerenciadorLicencas admin_gui.py
+      - name: Verify compiled applications
+        run: python tools/check_executables.py
+      - name: Include owner instructions
+        run: Copy-Item docs/GUIA-PROPRIETARIO.txt dist/GUIA-PROPRIETARIO.txt
+      - uses: actions/upload-artifact@v4
+        with:
+          name: MacroCompleto-Kit-Proprietario-Windows
+          path: |
+            dist/MacroCompleto.exe
+            dist/GerenciadorLicencas.exe
+            dist/GUIA-PROPRIETARIO.txt
+          if-no-files-found: error
+          retention-days: 90
