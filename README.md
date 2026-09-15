@@ -1,3 +1,5 @@
+> **Assinatura Windows:** os downloads anteriores não são assinados. A integração para emissão de versões assinadas está preparada, mas depende de certificado aprovado e configuração do proprietário. [Passos para ativar](docs/ASSINATURA.md).
+
 # Macro Completo V2
 
 Aplicativo desktop Python para Windows com interface em português, perfis por operador/arma e licenças assinadas. Implementação separada do [Macro-Completo original](https://github.com/Policarpo7/Macro-Completo).
@@ -33,7 +35,7 @@ Catálogo inicial não exaustivo. Adicione os demais usando **Novo**. A seleçã
 
 O cliente recebe um ZIP, extrai e abre **MacroCompleto.exe** com dois cliques. Python e dependências já estão incluídos; não existe terminal no uso normal.
 
-**Para você:** abra [Windows executables](https://github.com/Policarpo7/Macro-Completo-V2/actions/workflows/windows-app.yml), escolha a execução verde mais recente e baixe **MacroCompleto-Kit-Proprietario-Windows** em **Artifacts**. O download exige login no GitHub; os artefatos ficam disponíveis por 90 dias e podem ser recriados pelo botão **Run workflow**. Extraia o ZIP e abra **GerenciadorLicencas.exe**.
+**Para você:** abra [Windows executables](https://github.com/Policarpo7/Macro-Completo-V2/actions/workflows/windows-app.yml), escolha a execução verde mais recente e baixe **MacroCompleto-TESTE-SEM-ASSINATURA** (desenvolvimento) ou **MacroCompleto-Kit-ASSINADO-Windows** (após configurar assinatura) em **Artifacts**. O download exige login no GitHub; os artefatos ficam disponíveis por 90 dias e podem ser recriados pelo botão **Run workflow**. Extraia o ZIP e abra **GerenciadorLicencas.exe**.
 
 1. Clique em **Criar emissor** e escolha sua senha (somente na primeira vez).
 2. Clique em **Preparar ZIP do cliente**. O gerenciador reúne o aplicativo, a chave pública e instruções simples.

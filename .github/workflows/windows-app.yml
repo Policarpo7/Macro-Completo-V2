@@ -3,13 +3,35 @@ on:
   push:
     branches: [main]
   workflow_dispatch:
+    inputs:
+      assinar:
+        description: "Assinar com certificado aprovado no SSL.com eSigner"
+        type: boolean
+        default: true
 permissions:
   contents: read
 jobs:
   build:
+    if: github.ref == 'refs/heads/main'
+    environment: code-signing
     runs-on: windows-latest
     timeout-minutes: 20
     steps:
+      - name: Check signing configuration
+        if: inputs.assinar == true
+        shell: pwsh
+        env:
+          ES_USERNAME: ${{ secrets.ES_USERNAME }}
+          ES_PASSWORD: ${{ secrets.ES_PASSWORD }}
+          CREDENTIAL_ID: ${{ secrets.CREDENTIAL_ID }}
+          ES_TOTP_SECRET: ${{ secrets.ES_TOTP_SECRET }}
+          SIGNING_CERT_SHA1: ${{ vars.SIGNING_CERT_SHA1 }}
+        run: |
+          foreach ($name in @("ES_USERNAME", "ES_PASSWORD", "CREDENTIAL_ID", "ES_TOTP_SECRET", "SIGNING_CERT_SHA1")) {
+            if ([string]::IsNullOrWhiteSpace([Environment]::GetEnvironmentVariable($name))) {
+              throw "Configure $name no environment code-signing. Consulte docs/ASSINATURA.md. Nenhuma assinatura foi solicitada."
+            }
+          }
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
@@ -24,14 +46,63 @@ jobs:
         run: python -m PyInstaller --noconfirm --clean --onefile --windowed --noupx --name GerenciadorLicencas admin_gui.py
       - name: Verify compiled applications
         run: python tools/check_executables.py
+      - name: Verify unsigned files are rejected
+        shell: pwsh
+        run: |
+          $rejected = $false
+          try {
+            & ./tools/verify-signatures.ps1 -Directory dist -ExpectedThumbprint ('0' * 40)
+          } catch {
+            $rejected = $true
+            Write-Host "Verificacao rejeitou executaveis sem assinatura, como esperado."
+          }
+          if (-not $rejected) { throw "A verificacao aceitou arquivos sem assinatura." }
+      - name: Sign executables
+        if: inputs.assinar == true
+        uses: SSLcom/esigner-codesign@b7f8ff36fc0de8690fbbab8e5b4421d29802f747
+        with:
+          command: batch_sign
+          username: ${{ secrets.ES_USERNAME }}
+          password: ${{ secrets.ES_PASSWORD }}
+          credential_id: ${{ secrets.CREDENTIAL_ID }}
+          totp_secret: ${{ secrets.ES_TOTP_SECRET }}
+          dir_path: ${{ github.workspace }}/dist
+          output_path: ${{ github.workspace }}/signed
+          environment_name: PROD
+          malware_block: true
+          clean_logs: true
+      - name: Verify signatures and timestamps
+        if: inputs.assinar == true
+        shell: pwsh
+        env:
+          EXPECTED_THUMBPRINT: ${{ vars.SIGNING_CERT_SHA1 }}
+        run: |
+          & ./tools/verify-signatures.ps1 -Directory signed -ExpectedThumbprint $env:EXPECTED_THUMBPRINT
+          Copy-Item signed/MacroCompleto.exe dist/MacroCompleto.exe -Force
+          Copy-Item signed/GerenciadorLicencas.exe dist/GerenciadorLicencas.exe -Force
+          python tools/check_executables.py
+          if ($LASTEXITCODE -ne 0) { throw "Falha ao abrir executaveis assinados." }
+      - name: Label package
+        shell: pwsh
+        env:
+          SIGNED_BUILD: ${{ inputs.assinar == true }}
+        run: |
+          if ($env:SIGNED_BUILD -eq "true") {
+            "Executaveis com assinatura Authenticode e carimbo de tempo verificados. Testar no Windows de destino." | Set-Content dist/STATUS-ASSINATURA.txt
+          } else {
+            "SEM ASSINATURA. Build de desenvolvimento. Pode ser bloqueado pelo Controle Inteligente de Aplicativos. Consulte docs/ASSINATURA.md." | Set-Content dist/STATUS-ASSINATURA.txt
+          }
+          Get-FileHash dist/*.exe -Algorithm SHA256 | Format-Table -AutoSize | Out-String -Width 240 | Set-Content dist/SHA256.txt
       - name: Include owner instructions
         run: Copy-Item docs/GUIA-PROPRIETARIO.txt dist/GUIA-PROPRIETARIO.txt
       - uses: actions/upload-artifact@v4
         with:
-          name: MacroCompleto-Kit-Proprietario-Windows
+          name: ${{ inputs.assinar == true && 'MacroCompleto-Kit-ASSINADO-Windows' || 'MacroCompleto-TESTE-SEM-ASSINATURA' }}
           path: |
             dist/MacroCompleto.exe
             dist/GerenciadorLicencas.exe
             dist/GUIA-PROPRIETARIO.txt
+            dist/STATUS-ASSINATURA.txt
+            dist/SHA256.txt
           if-no-files-found: error
           retention-days: 90
