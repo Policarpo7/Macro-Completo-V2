@@ -6,6 +6,7 @@ from tkinter import filedialog, messagebox, simpledialog, ttk
 from admin.distribution import provision, load_issuer, package_client
 from admin.license_tool import issue
 from macro.licensing import PLAN_LABELS
+from macro.branding import apply_icon
 
 ROOT = Path(sys.executable).resolve().parent if getattr(sys, "frozen", False) else Path(__file__).resolve().parent
 
@@ -13,12 +14,14 @@ ROOT = Path(sys.executable).resolve().parent if getattr(sys, "frozen", False) el
 class Admin(tk.Tk):
     def __init__(self):
         super().__init__()
+        apply_icon(self)
         self.title("Policarpo • Gerenciador de licenças (somente proprietário)")
         self.geometry("820x650")
         self.minsize(760, 620)
         frame = ttk.Frame(self, padding=24)
         frame.pack(fill="both", expand=True)
         ttk.Label(frame, text="GERENCIADOR DE LICENÇAS", font=("Segoe UI", 18, "bold")).pack(anchor="w")
+        ttk.Label(frame, text="Feito por Policarpo", font=("Segoe UI", 10, "bold")).pack(anchor="w")
         ttk.Label(frame, text="Guarde este aplicativo e sua pasta do emissor. Envie ao cliente apenas o ZIP gerado.").pack(anchor="w", pady=10)
         self.folder = tk.StringVar(value=str(Path.home() / "Documents" / "PolicarpoLicencas"))
         ttk.Label(frame, text="Pasta do emissor (chave privada e pública):").pack(anchor="w")

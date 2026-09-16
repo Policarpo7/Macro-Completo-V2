@@ -24,6 +24,8 @@ class Profile:
     dpi: int = 800
     sensitivity: str = "Preencher H / V / ADS"
     calibrated: bool = False
+    rapid_fire: bool = False
+    fire_cps: float = 5.0
 
     def validate(self):
         for field in ("id", "operator", "weapon", "loadout", "sensitivity"):
@@ -31,7 +33,7 @@ class Profile:
             if not isinstance(value, str) or not value.strip() or len(value) > 200:
                 raise ValueError("Preencha " + field + " (até 200 caracteres).")
         for field, minimum, maximum in (("vertical", 0, 30), ("lateral", -5, 5),
-                                        ("interval_ms", 5, 100)):
+                                        ("interval_ms", 5, 100), ("fire_cps", 1, 12)):
             value = getattr(self, field)
             if type(value) not in (float, int) or not math.isfinite(value) or not minimum <= value <= maximum:
                 raise ValueError(f"{field}: informe um valor entre {minimum} e {maximum}.")
@@ -39,12 +41,15 @@ class Profile:
             raise ValueError("DPI deve ser um inteiro de 100 a 50000.")
         if type(self.calibrated) is not bool:
             raise ValueError("Estado de calibração inválido.")
+        if type(self.rapid_fire) is not bool:
+            raise ValueError("Estado de Rapid Fire inválido.")
         return self
 
     @property
     def label(self):
         mark = "✓" if self.calibrated else "○"
-        return f"{mark} {self.operator} / {self.weapon} / {self.loadout}"
+        mode = " [RF]" if self.rapid_fire else ""
+        return f"{mark} {self.operator} / {self.weapon} / {self.loadout}{mode}"
 
 
 def defaults():

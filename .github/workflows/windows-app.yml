@@ -41,9 +41,9 @@ jobs:
       - name: Test before packaging
         run: python -m unittest discover -s tests -v
       - name: Build client
-        run: python -m PyInstaller --noconfirm --clean --onefile --windowed --noupx --name MacroCompleto --hidden-import pynput.keyboard._win32 --hidden-import pynput.mouse._win32 app.py
+        run: python -m PyInstaller --noconfirm --clean --onefile --windowed --noupx --icon assets/alien.ico --add-data "assets:assets" --version-file assets/version-info.txt --name MacroCompleto --hidden-import pynput.keyboard._win32 --hidden-import pynput.mouse._win32 app.py
       - name: Build owner tool
-        run: python -m PyInstaller --noconfirm --clean --onefile --windowed --noupx --name GerenciadorLicencas admin_gui.py
+        run: python -m PyInstaller --noconfirm --clean --onefile --windowed --noupx --icon assets/alien.ico --add-data "assets:assets" --version-file assets/version-info.txt --name GerenciadorLicencas admin_gui.py
       - name: Verify compiled applications
         run: python tools/check_executables.py
       - name: Verify unsigned files are rejected

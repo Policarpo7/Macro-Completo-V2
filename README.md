@@ -172,3 +172,20 @@ Este licenciamento é **offline**: o relógio e os arquivos locais não são fon
 - Catálogo oficial: [Ash](https://www.ubisoft.com/en-us/game/rainbow-six/siege/game-info/operators/ash), [Sledge](https://www.ubisoft.com/en-us/game/rainbow-six/siege/game-info/operators/sledge), [Thermite](https://www.ubisoft.com/en-us/game/rainbow-six/siege/game-info/operators/thermite), [Twitch](https://www.ubisoft.com/en-us/game/rainbow-six/siege/game-info/operators/twitch), [Jäger](https://www.ubisoft.com/en-us/game/rainbow-six/siege/game-info/operators/jager), [Bandit](https://www.ubisoft.com/en-us/game/rainbow-six/siege/game-info/operators/bandit), [Doc](https://www.ubisoft.com/en-us/game/rainbow-six/siege/game-info/operators/doc), [Smoke](https://www.ubisoft.com/en-us/game/rainbow-six/siege/game-info/operators/smoke). Estas páginas sustentam nomes/armas, não valores de compensação.
 
 Empacotamento: [PyInstaller — executáveis](https://pyinstaller.org/en/stable/usage.html) e [caminhos em execução](https://pyinstaller.org/en/stable/runtime-information.html).
+
+## Versão 2.1 — Rapid Fire e identidade visual
+
+Feito por **Policarpo**. Os dois executáveis usam um ícone original de alienígena e exibem a autoria na interface.
+
+- Clique em **Novo DMR** para criar um perfil com Rapid Fire ligado, 5 cliques/s e compensação vertical/lateral zerada. Preencha operador, arma e acessórios; salve.
+- Para um perfil existente, marque **Rapid Fire (DMR)** e configure **Cliques/s** entre 1 e 12.
+- F10 habilita o motor. Solte e pressione novamente os dois botões do mouse; mantenha esquerdo e direito pressionados para repetir os cliques.
+- Soltar qualquer botão, INSERT, F10, trocar perfil, fechar o programa ou expirar a licença interrompe a repetição e libera o clique sintético pendente.
+- O clique físico inicial é seguido pelos cliques repetidos. O programa não detecta automaticamente se a arma é DMR e não garante que o jogo aceite a cadência configurada.
+- A compensação de recuo pode ser usada junto com Rapid Fire. Zere vertical e lateral para repetir somente os cliques.
+- Perfis antigos carregam com Rapid Fire desligado. O JSON continua compatível com o carregamento dos arquivos anteriores. Novos arquivos incluem rapid_fire e fire_cps.
+- A prévia gráfica continua mostrando apenas deslocamento; não dispara cliques.
+
+O executável de teste continua sem assinatura digital. Ícone e autoria não substituem assinatura Authenticode.
+
+Ícone: geração original com a ferramenta de imagens, pedido de cabeça de alienígena verde, olhos escuros e silhueta simples para aplicativo. Recursos em assets/alien.png e assets/alien.ico (16 a 256 px).

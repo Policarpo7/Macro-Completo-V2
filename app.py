@@ -9,6 +9,7 @@ from pathlib import Path
 from tkinter import filedialog, messagebox, ttk
 
 from macro.engine import Engine, FractionalMotion
+from macro.branding import apply_icon
 from macro.licensing import (ClockGuard, LicenseError, LicenseSession, PLAN_LABELS,
                              decode, device_id, verify)
 from macro.profiles import (CATALOG, Profile, duplicate, load_profiles, save_profiles)
@@ -22,6 +23,7 @@ BG, CARD, TEXT, MUTED, ACCENT = "#0b1220", "#162235", "#e8eef7", "#a4b3c8", "#43
 class App(tk.Tk):
     def __init__(self, autostart=True):
         super().__init__()
+        apply_icon(self)
         self.title("Policarpo • Macro Completo V2")
         self.geometry("1060x790")
         self.minsize(960, 750)
@@ -97,6 +99,7 @@ class App(tk.Tk):
         row = ttk.Frame(left)
         row.pack(fill="x", pady=8)
         ttk.Button(row, text="Novo", command=self.new_profile).pack(side="left")
+        ttk.Button(row, text="Novo DMR", command=self.new_dmr).pack(side="left", padx=4)
         ttk.Button(row, text="Duplicar", command=self.copy_profile).pack(side="left", padx=4)
         ttk.Button(row, text="Excluir", command=self.delete_profile).pack(side="left")
         row2 = ttk.Frame(left)
@@ -106,8 +109,17 @@ class App(tk.Tk):
         ttk.Label(left, text="○ A calibrar    ✓ Calibrado por você\nModelos iniciais: vertical 8, lateral 0.\nNão são valores medidos por arma.",
                   style="Muted.TLabel").pack(anchor="w", pady=12)
 
-        right = ttk.Frame(self.profiles_tab)
-        right.pack(side="left", fill="both", expand=True)
+        right_panel = ttk.Frame(self.profiles_tab)
+        right_panel.pack(side="left", fill="both", expand=True)
+        scroller = tk.Canvas(right_panel, bg=BG, highlightthickness=0, width=470)
+        scrollbar = ttk.Scrollbar(right_panel, orient="vertical", command=scroller.yview)
+        scroller.configure(yscrollcommand=scrollbar.set)
+        scrollbar.pack(side="right", fill="y")
+        scroller.pack(side="left", fill="both", expand=True)
+        right = ttk.Frame(scroller)
+        pane = scroller.create_window((0, 0), window=right, anchor="nw")
+        right.bind("<Configure>", lambda event: scroller.configure(scrollregion=scroller.bbox("all")))
+        scroller.bind("<Configure>", lambda event: scroller.itemconfigure(pane, width=event.width))
         form = ttk.Frame(right)
         form.pack(fill="x")
         labels = [("operator", "Operador"), ("weapon", "Arma"), ("loadout", "Mira / acessórios"),
@@ -115,7 +127,7 @@ class App(tk.Tk):
                   ("interval_ms", "Intervalo (ms)"), ("dpi", "DPI do mouse"),
                   ("sensitivity", "Sensibilidade H / V / ADS")]
         for index, (name, label) in enumerate(labels):
-            ttk.Label(form, text=label).grid(row=index, column=0, sticky="w", pady=5, padx=(0, 12))
+            ttk.Label(form, text=label).grid(row=index, column=0, sticky="w", pady=3, padx=(0, 12))
             variable = tk.StringVar()
             self.fields[name] = variable
             if name in ("operator", "weapon"):
@@ -133,6 +145,18 @@ class App(tk.Tk):
         self.calibrated = tk.BooleanVar()
         ttk.Checkbutton(right, text="Testei e calibrei este perfil", variable=self.calibrated,
                         command=self.engine.pause).pack(anchor="w", pady=(10, 4))
+        rapid_row = ttk.Frame(right)
+        rapid_row.pack(fill="x", pady=4)
+        self.rapid_fire = tk.BooleanVar()
+        self.fire_cps = tk.StringVar(value="5")
+        self.rapid_fire.trace_add("write", lambda *args: self.engine.pause())
+        self.fire_cps.trace_add("write", lambda *args: self.engine.pause())
+        ttk.Checkbutton(rapid_row, text="Rapid Fire (DMR)", variable=self.rapid_fire).pack(side="left")
+        ttk.Label(rapid_row, text="Cliques/s:").pack(side="left", padx=(12, 4))
+        ttk.Spinbox(rapid_row, from_=1, to=12, increment=0.5,
+                    textvariable=self.fire_cps, width=5).pack(side="left")
+        ttk.Label(right, text="1–12 cliques/s • ajuste à arma; Novo DMR começa sem compensação.",
+                  style="Muted.TLabel").pack(anchor="w")
         actions = ttk.Frame(right)
         actions.pack(fill="x", pady=8)
         ttk.Button(actions, text="Salvar e aplicar", command=self.save_current).pack(side="left")
@@ -169,6 +193,8 @@ class App(tk.Tk):
             "   Salve e use a prévia para verificar o sentido e a intensidade relativa.\n\n"
             "4. F10 ativa/pausa. O movimento exige os botões esquerdo e direito pressionados juntos.\n"
             "   Após ativar, solte e pressione os botões novamente. INSERT pausa imediatamente.\n\n"
+            "DMR: use Novo DMR ou marque Rapid Fire. Ajuste Cliques/s, salve e segure os dois botões.\n"
+            "O ritmo configurado não garante a cadência aceita pela arma.\n\n"
             "5. Trocar de perfil, editar, mudar de aba ou renovar a licença pausa a execução.\n"
             "   A licença é verificada durante a execução, inclusive se a interface estiver ocupada.\n\n"
             "6. Valide os valores no seu Windows e marque o perfil como calibrado somente após testar.\n"
@@ -180,6 +206,7 @@ class App(tk.Tk):
         ttk.Label(help_tab, text=help_text, wraplength=900, justify="left").pack(anchor="w")
         footer = ttk.Frame(self, padding=(24, 12))
         footer.pack(fill="x")
+        ttk.Label(footer, text="Feito por Policarpo", style="Status.TLabel").pack(anchor="e")
         ttk.Label(footer, textvariable=self.notice, wraplength=980, style="Muted.TLabel").pack(anchor="w")
 
     def initialize(self):
@@ -236,6 +263,8 @@ class App(tk.Tk):
         for name, variable in self.fields.items():
             variable.set(str(getattr(profile, name)))
         self.calibrated.set(profile.calibrated)
+        self.rapid_fire.set(profile.rapid_fire)
+        self.fire_cps.set(str(profile.fire_cps))
         self.weapon_box["values"] = CATALOG.get(profile.operator, [])
         self.notice.set("Perfil carregado. Ajustes só são gravados em Salvar e aplicar.")
 
@@ -256,7 +285,8 @@ class App(tk.Tk):
             values[name] = float(values[name].replace(",", "."))
         values["dpi"] = int(values["dpi"])
         return Profile(id=self.items[self.selected].id,
-                       calibrated=self.calibrated.get(), **values).validate()
+                       calibrated=self.calibrated.get(), rapid_fire=self.rapid_fire.get(),
+                       fire_cps=float(self.fire_cps.get().replace(",", ".")), **values).validate()
 
     def commit_items(self, items, index):
         save_profiles(self.profile_path, items)
@@ -289,6 +319,16 @@ class App(tk.Tk):
             self.commit_items(self.items + [duplicate(self.read_form())], len(self.items))
         except Exception as error:
             messagebox.showerror("Duplicar", str(error))
+
+    def new_dmr(self):
+        self.engine.pause()
+        try:
+            item = duplicate(Profile("new", "Novo operador", "DMR",
+                                     vertical=0, rapid_fire=True, fire_cps=5))
+            self.commit_items(self.items + [replace(item, loadout="Padrão")], len(self.items))
+            self.notice.set("DMR criado: Rapid Fire a 5 cliques/s. Informe operador/arma, ajuste e salve.")
+        except Exception as error:
+            messagebox.showerror("Novo DMR", str(error))
 
     def delete_profile(self):
         self.engine.pause()
