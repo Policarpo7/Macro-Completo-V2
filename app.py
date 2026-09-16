@@ -168,7 +168,7 @@ class App(tk.Tk):
         self.preview_text = ttk.Label(right, text="Prévia ilustra deslocamento, não o recuo do jogo.",
                                       style="Muted.TLabel")
         self.preview_text.pack(anchor="w")
-        ttk.Button(right, text="Ativar / pausar  •  F10", command=self.toggle).pack(fill="x", pady=10)
+        ttk.Button(right, text="Ativar / pausar  •  F9", command=self.toggle).pack(fill="x", pady=10)
 
         ttk.Label(self.license_tab, text="LICENÇA DO COMPUTADOR", style="Status.TLabel").pack(anchor="w")
         ttk.Label(self.license_tab, textvariable=self.license_status, wraplength=840).pack(anchor="w", pady=16)
@@ -191,7 +191,7 @@ class App(tk.Tk):
             "   Registre DPI, sensibilidade e acessórios; estes campos são anotações, não alteram o jogo.\n\n"
             "3. Ajuste as forças. Lateral negativo move à esquerda; positivo, à direita.\n"
             "   Salve e use a prévia para verificar o sentido e a intensidade relativa.\n\n"
-            "4. F10 ativa/pausa. O movimento exige os botões esquerdo e direito pressionados juntos.\n"
+            "4. F9 ativa/pausa. O movimento exige os botões esquerdo e direito pressionados juntos.\n"
             "   Após ativar, solte e pressione os botões novamente. INSERT pausa imediatamente.\n\n"
             "DMR: use Novo DMR ou marque Rapid Fire. Ajuste Cliques/s, salve e segure os dois botões.\n"
             "O ritmo configurado não garante a cadência aceita pela arma.\n\n"
@@ -199,7 +199,7 @@ class App(tk.Tk):
             "   A licença é verificada durante a execução, inclusive se a interface estiver ocupada.\n\n"
             "6. Valide os valores no seu Windows e marque o perfil como calibrado somente após testar.\n"
             "   Não há detecção automática de personagem, janela do jogo ou acessórios.\n"
-            "   Quando ativado, o movimento é global. Pause com F10 antes de trocar de aplicativo.\n\n"
+            "   Quando ativado, o movimento é global. Pause com F9 antes de trocar de aplicativo.\n\n"
             "Perfis e licença ficam em %LOCALAPPDATA%\\PolicarpoMacroV2.\n"
             "Para renovar, envie o ID ao fornecedor e cole a nova key na aba Licença."
         )
@@ -300,7 +300,7 @@ class App(tk.Tk):
             updated = list(self.items)
             updated[self.selected] = item
             self.commit_items(updated, self.selected)
-            self.notice.set("Perfil salvo e aplicado. Pressione F10 para ativar.")
+            self.notice.set("Perfil salvo e aplicado. Pressione F9 para ativar.")
         except Exception as error:
             messagebox.showerror("Não foi possível salvar", str(error))
 
@@ -430,7 +430,7 @@ class App(tk.Tk):
             token = "".join(self.key_box.get("1.0", "end").split())
             self.install_license(token, persist=True)
             self.key_box.delete("1.0", "end")
-            self.notice.set("Licença ativada. Selecione um perfil e pressione F10.")
+            self.notice.set("Licença ativada. Selecione um perfil e pressione F9.")
         except Exception as error:
             messagebox.showerror("Ativação", str(error))
 
@@ -490,7 +490,7 @@ class App(tk.Tk):
             self.engine.set_session(None)
             self.session = None
             self.license_status.set(str(error))
-        self.status.set("ATIVADO • F10 PARA PAUSAR" if self.engine.enabled else "PAUSADO")
+        self.status.set("ATIVADO • F9 PARA PAUSAR" if self.engine.enabled else "PAUSADO")
         self.after(100, self.poll)
 
     def close(self):

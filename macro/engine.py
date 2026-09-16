@@ -73,7 +73,7 @@ class Engine:
             if key in self.held_keys:
                 return
             self.held_keys.add(key)
-        if key == self.keyboard.Key.f10:
+        if key == self.keyboard.Key.f9:
             self.events.put("toggle")
         elif key == self.keyboard.Key.insert:
             self.pause()  # Immediate stop, even if the GUI is busy.

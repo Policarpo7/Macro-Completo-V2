@@ -11,7 +11,7 @@ Aplicativo desktop Python para Windows com interface em português, perfis por o
 - Salvar, duplicar, excluir, importar e exportar perfis em JSON.
 - Forças vertical/lateral, intervalo, DPI, sensibilidade e acessórios por perfil.
 - Prévia animada sem movimento real do mouse e sem exigir licença.
-- F10 ativa/pausa; INSERT pausa imediatamente. Só move ao segurar os dois botões do mouse.
+- F9 ativa/pausa; INSERT pausa imediatamente. Só move ao segurar os dois botões do mouse.
 - Alterações de perfil e de licença sempre pausam o motor.
 - Acumulação de frações corrige os ajustes laterais pequenos descartados pela V1.
 - Licenças Ed25519 por computador, com vencimento verificado durante a execução.
@@ -127,8 +127,8 @@ Lifetime não exige renovação por prazo. Continua vinculada ao mesmo ID de ins
 2. Ajuste vertical e lateral. Lateral negativo: esquerda; positivo: direita.
 3. Clique em **Salvar e aplicar**, depois na **Prévia de 1 segundo**.
 4. A prévia verifica direção/deslocamento nominal e não simula o recuo da arma.
-5. Com uma licença ativa, F10 habilita o motor. Solte e pressione novamente os botões esquerdo e direito.
-6. F10 ou INSERT pausa. Fechar a janela encerra o motor e os listeners.
+5. Com uma licença ativa, F9 habilita o motor. Solte e pressione novamente os botões esquerdo e direito.
+6. F9 ou INSERT pausa. Fechar a janela encerra o motor e os listeners.
 7. Depois da calibração prática, marque **Testei e calibrei este perfil** e salve.
 8. Duplique o perfil para outras miras ou acessórios.
 9. Reinicie o aplicativo e confirme que os dados foram mantidos.
@@ -179,8 +179,8 @@ Feito por **Policarpo**. Os dois executáveis usam um ícone original de aliení
 
 - Clique em **Novo DMR** para criar um perfil com Rapid Fire ligado, 5 cliques/s e compensação vertical/lateral zerada. Preencha operador, arma e acessórios; salve.
 - Para um perfil existente, marque **Rapid Fire (DMR)** e configure **Cliques/s** entre 1 e 12.
-- F10 habilita o motor. Solte e pressione novamente os dois botões do mouse; mantenha esquerdo e direito pressionados para repetir os cliques.
-- Soltar qualquer botão, INSERT, F10, trocar perfil, fechar o programa ou expirar a licença interrompe a repetição e libera o clique sintético pendente.
+- F9 habilita o motor. Solte e pressione novamente os dois botões do mouse; mantenha esquerdo e direito pressionados para repetir os cliques.
+- Soltar qualquer botão, INSERT, F9, trocar perfil, fechar o programa ou expirar a licença interrompe a repetição e libera o clique sintético pendente.
 - O clique físico inicial é seguido pelos cliques repetidos. O programa não detecta automaticamente se a arma é DMR e não garante que o jogo aceite a cadência configurada.
 - A compensação de recuo pode ser usada junto com Rapid Fire. Zere vertical e lateral para repetir somente os cliques.
 - Perfis antigos carregam com Rapid Fire desligado. O JSON continua compatível com o carregamento dos arquivos anteriores. Novos arquivos incluem rapid_fire e fire_cps.

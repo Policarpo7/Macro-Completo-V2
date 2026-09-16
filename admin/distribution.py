@@ -11,7 +11,7 @@ INSTRUCTIONS = """MACRO COMPLETO V2
 2. Abra MacroCompleto.exe com dois cliques.
 3. Na aba Licenca, clique em Copiar ID e envie ao fornecedor.
 4. Cole a key recebida e clique em Ativar / renovar licenca.
-5. Escolha seu perfil e use F10 para ativar/pausar. INSERT pausa.
+5. Escolha seu perfil e use F9 para ativar/pausar. INSERT pausa.
 
 Nao precisa instalar Python. Nao precisa abrir comandos.
 Mantenha public_key.txt na mesma pasta do aplicativo.
